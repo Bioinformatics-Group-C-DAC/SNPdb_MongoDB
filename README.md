@@ -26,7 +26,7 @@
 
 1. Clone the SNP git repository
     ```sh
-    git clone --
+    git clone https://github.com/bio-cdac/SNPdb_MongoDB
     ```
 2. ```sh 
    cd SNP
@@ -89,3 +89,4 @@
 
 4. After feeding above information the SNPWebApp home page will be prompted when you can run it by feeding chromosome information
 
+![SNP Web App with MongoDB](https://raw.githubusercontent.com/bio-cdac/SNPdb_MongoDB/master/mongo.gif)
