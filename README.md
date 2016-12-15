@@ -6,19 +6,19 @@
 ## A. Install Mongodb
 
 
-1. Download Mongodb from https://www.mongodb.com/download-center#community
-2. Extract it at the appropriate directory
-3. Update the ~/.bashrc for PATH environment variable
+ 1. Download Mongodb from https://www.mongodb.com/download-center#community
+ 2. Extract it at the appropriate directory
+ 3. Update the ~/.bashrc for PATH environment variable
     
     ```sh
     export PATH=$PATH:<mongo_dir>/bin
     ```
-4. Create directory for storing the data
+ 4. Create directory for storing the data
     
     ```sh
     mkdir -p ~/mongo_data/db
     ```
-5. Start mongodb with command (by default it binds 27017 port)
+ 5. Start mongodb with command (by default it binds 27017 port)
    
    ```sh
    mongod --dbpath ~/mongo_data/db
@@ -27,7 +27,7 @@
 
 ## B. Build SNP with MongoDB Project
 
-1. Clone the SNP git repository
+ 1. Clone the SNP git repository
     
     ```sh
     git clone https://github.com/bio-cdac/SNPdb_MongoDB
@@ -35,30 +35,31 @@
     mvn install
     ```
 
-2. Download the VCF input files vcf.tar.bz2 (696M)
+ 2. Download the VCF input files vcf.tar.bz2 (696M)
     
     ```sh 
     https://drive.google.com/file/d/0B1MMYWhD1Om4OVBLcVBpNGhSalE/view?usp=sharing
     ```
    
-3. Extract vcf input files from tar.bz2
+ 3. Extract vcf input files from tar.bz2
    
    ```sh    
    tar -xjvf vcf.tar.bz2   
    ```
    
- ## C. Load VCF data into Mongo DB
+## C. Load VCF data into Mongo DB
  
- 1. __SNPMongodbUtils/target/ChickenSNP-1.0.jar__ is library for query data from mongodb and  __SNPMongodbUtils/target/ChickenSNP-1.0-jar-with-dependencies.jar__ is standalone utility for load the vcf data into mongodb as well as query the mongo db
+  1. __SNPMongodbUtils/target/ChickenSNP-1.0.jar__ is library for query data from mongodb and  __SNPMongodbUtils/target/ChickenSNP-1.0-jar-with-dependencies.jar__ is standalone utility for load the vcf data into mongodb as well as query the mongo db
      
      ```sh
      java -jar SNPMongodbUtils/target/ChickenSNP-1.0-jar-with-dependencies.jar -h
      ```
      ChickenSNP-1.0-jar-with-dependencies.jar has 2 sub commands 
      store and query.
+     
  2. Load the vcf files into Mongodb
  
- 	```sh
+    ```sh
     java -jar SNPMongodbUtils/target/SNPMongodbUtils/target/ChickenSNP-1.0-jar-with-dependencies.jar store --host localhost --port 27017 --database pcsnp --collection chicken --inputpath /vcf 
     ```
     here __/vcf__ is directory path where all vcf files are there
@@ -67,13 +68,13 @@
     
  3. To query the MongoDB use query sub command
 	
-	```sh
-	java -jar SNPMongodbUtils/target/ChickenSNP-1.0-jar-with-dependencies.jar query --host localhost --port 27017 --database pcsnp --collection chicken --chromosome 1 --start 1000  --end 100000 -left LineN -left Line6 -right LineC
+     ```sh
+     java -jar SNPMongodbUtils/target/ChickenSNP-1.0-jar-with-dependencies.jar query --host localhost --port 27017 --database pcsnp --collection chicken --chromosome 1 --start 1000  --end 100000 -left LineN -left Line6 -right LineC
     ```
  	here -left and -right may come multiple times
  
  
- ## D. Run SNP Web Application
+## D. Run SNP Web Application
  
  1. Run the Web Application (2 Option)
     1. If Already Wildfly server is there, then deploy the __SNPWebApp.war__ file from SNPMongoWebApp/target/SNPWebApp.war
