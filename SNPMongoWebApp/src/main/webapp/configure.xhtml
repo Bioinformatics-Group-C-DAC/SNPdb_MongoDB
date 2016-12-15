@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:pri="http://primefaces.org/ui" 
+      xmlns:pe="http://primefaces.org/ui/extensions" 
+      xmlns:p="http://xmlns.jcp.org/jsf/passthrough">
+    <h:head>
+
+    </h:head>
+    <h:body class="home image-sphere-style responsive yes_js">
+        <f:view contentType="text/html">
+            <ui:composition template="./template/commonLayout.xhtml">
+                <ui:define name="content">
+
+
+
+                    <div id="content" class="gradient layout-sidebar-no group">
+
+                        Configure
+                    </div>
+
+
+
+
+
+
+                   
+
+                            <!-- SLOGAN -->
+                            <div id="slogan1" class="inner">
+                                <center>
+                                    <h:form id="formconfigure" prependId="false" > 
+                                        <h:messages id="msgadv" style="color: red;"/>
+                                        <h:panelGrid columns="2">
+
+
+                                            <h:outputLabel value="Mongodb host IP"/>
+                                            <h:inputText value="#{configurationBean.mongodbIP}"/>
+
+                                            <h:outputLabel value="Mongodb Port"/>
+                                            <h:inputText value="#{configurationBean.mongoPort}"/>
+
+                                            <h:outputLabel value="Mongodb Database Name"/>
+                                            <h:inputText value="#{configurationBean.database}"/>
+
+                                            <h:outputLabel value="Mongodb Collection/Table"/>
+                                            <h:inputText value="#{configurationBean.collectionName}"/>
+
+                                            <pri:commandButton id="saveBtn" ajax="false" 
+                                                               action="#{configurationBean.submit()}" value="Submit" />
+
+                                        </h:panelGrid>
+
+                                    </h:form>
+                                </center>
+                            </div>
+                        
+
+                </ui:define>
+            </ui:composition>
+        </f:view>
+    </h:body>
+</html>

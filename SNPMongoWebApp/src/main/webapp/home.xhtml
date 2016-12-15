@@ -1,0 +1,152 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:pri="http://primefaces.org/ui" 
+      xmlns:pe="http://primefaces.org/ui/extensions" 
+      xmlns:p="http://xmlns.jcp.org/jsf/passthrough">
+    <h:head>
+       
+    </h:head>
+    <h:body class="home image-sphere-style responsive yes_js">
+        <f:view contentType="text/html">
+            <ui:composition template="./template/commonLayout.xhtml">
+                <ui:define name="content">
+
+
+                    <div id="content" class="gradient layout-sidebar-no group">
+
+                        <!-- SLOGAN -->
+                        <div id="slogan1" class="inner">
+                            <h:form id="formbasic" prependId="false" >  
+                                <pri:panel style="background-color: #CACACA;">
+                                    <center><b><font color="black">Chicken SNPdb: Variant Analysis of Chicken Lines</font></b> </center>
+                                </pri:panel>
+                                
+                                <table border="border" align="center" >
+                                    <tr>
+                                        <th>Line Set 1</th>
+                                        <th>Line Set 2</th>
+                                        <th valign="middle">
+                                            <pri:selectBooleanCheckbox value="#{snpHomeBean.value1}"  >                                                
+                                                <f:ajax render=":formbasic"/>
+                                            </pri:selectBooleanCheckbox>  
+                                            <h:outputLabel value="Use range with chromosome"/>
+                                        </th>
+                                        <th width="50%"></th>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <pri:selectManyMenu value="#{snpHomeBean.selectedChickenLineInfoSetOne}"  
+                                                              style="height: 90px;width: 200px;text-align: left;
+                                                              overflow-y: scroll" >  
+                                                <f:selectItems value="#{snpHomeBean.chickenLineInfo}" 
+                                                               itemLabel="#{snpHomeBean.chickenLineInfo}" 
+                                                               itemValue="#{snpHomeBean.chickenLineInfo}" />                                             
+                                            </pri:selectManyMenu>                                           
+                                            
+                                        </td>
+                                        <td>
+                                            <pri:selectManyMenu value="#{snpHomeBean.selectedChickenLineInfoSetTwo}"  
+                                                              style="height: 90px;width: 200px;text-align: left;overflow-y: scroll"   >  
+                                                <f:selectItems value="#{snpHomeBean.chickenLineInfo}" 
+                                                               itemLabel="#{snpHomeBean.chickenLineInfo}" 
+                                                               itemValue="#{snpHomeBean.chickenLineInfo}" />                                             
+                                            </pri:selectManyMenu>
+                                        </td>
+
+                                        <td>
+                                            <h:panelGrid id="two" columns="2" 
+                                                         rendered="#{!snpHomeBean.value1}">
+                                                <h:outputLabel value="Chromosome"/>
+                                                <h:inputText value="#{snpHomeBean.chromosome}"/>
+
+                                                <h:outputLabel value="start"/>
+                                                <h:inputText value="#{snpHomeBean.startPosition}"/>
+                                                <h:outputLabel value="end"/>
+                                                <h:inputText value="#{snpHomeBean.endPosition}"/>
+
+                                            </h:panelGrid>
+
+                                            <h:panelGrid id="one" columns="2" 
+                                                         rendered="#{snpHomeBean.value1}">
+                                                <h:outputLabel value="Chromosome"/>                                        
+                                                <h:inputText value="#{snpHomeBean.chromosome}" p:placeholder="A:00000-00000"/>
+                                                <h:outputLabel value=""/>  
+                                                <h:outputLabel value="[Chromosome:start-end]" style="font-style: italic"/> 
+                                            </h:panelGrid>
+                                        </td>
+                                        <td valign="bottom">
+                                            <pri:commandButton id="saveBtn" update="formbasic msgadv"
+                                                               action="#{snpHomeBean.submit()}" value="Submit" 
+                                                               onstart="PF('blockUIWidget').block()"  
+                                                               oncomplete="PF('blockUIWidget').unblock()"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4">
+
+                                        </td>
+                                    </tr> 
+
+                                </table>
+                                <pe:blockUI widgetVar="blockUIWidget"
+                                            cssOverlay="{backgroundColor: 'red'}">
+                                    <h:panelGrid columns="2">
+                                        <h:graphicImage library="images" name="ajax-loader-1.gif"  height="40px" width="40px"
+                                                        style="margin-right: 12px; vertical-align: middle;"/>  
+                                        <h:outputText value="Please wait..." style="white-space: nowrap;"/>                                            
+                                    </h:panelGrid>
+                                </pe:blockUI>
+                                
+                                <h:messages id="msgadv" style="color: red;"/>
+                                
+                                <h:outputLabel value="Total records found : #{snpHomeBean.totalcount}"
+                                               rendered="#{!snpHomeBean.totalcount.equals('')}"/>
+                                <br/>
+                                <a href="download" target="_blank">
+                                    <font style="vertical-align: middle">Download results </font><pri:graphicImage name="images/export_icon.jpg" width="24" alt="Save to TXT File"/>                                        
+                                </a>
+
+
+
+                                <pri:dataTable var="sequence" value="#{snpHomeBean.outputSNPBeans}" resizableColumns="true" 
+                                               rows="500"
+                                               paginator="true" scrollable="true" scrollHeight="450"
+                                               paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                               rowsPerPageTemplate="500,1000,1500">
+
+
+                                    
+                                    <pri:column headerText="Chromosome" width="20px">
+                                        #{sequence.chromosome}
+                                    </pri:column>
+                                    <pri:column headerText="Position">
+                                        #{sequence.chromosome_Position}
+                                    </pri:column>
+                                    <pri:column headerText="Ref">
+                                        #{sequence.ref}
+                                    </pri:column>
+                                    <pri:column headerText="#{snpHomeBean.setOneHeader}">
+                                        #{sequence.setOne}
+                                    </pri:column>
+                                    <pri:column headerText="#{snpHomeBean.setTwoHeader}">
+                                        #{sequence.setTwo}
+                                    </pri:column>
+                                </pri:dataTable>
+
+                            </h:form>
+                        </div>
+                    </div>
+
+
+
+
+
+                </ui:define>
+            </ui:composition>
+        </f:view>
+    </h:body>
+</html>
