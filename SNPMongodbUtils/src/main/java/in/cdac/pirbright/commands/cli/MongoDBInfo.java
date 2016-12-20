@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.cdac.mongodb.cmd;
+package in.cdac.pirbright.commands.cli;
 
 import com.beust.jcommander.Parameter;
 
@@ -40,6 +40,11 @@ public class MongoDBInfo {
         return collection;
     }
 
+    public void setCollection(String collection) {
+        this.collection = collection;
+    }
+
+    
     @Override
     public String toString() {
         return "MongoDBInfo{" + "host=" + host + ", port=" + port + ", database=" + database + ", collection=" + collection + '}';

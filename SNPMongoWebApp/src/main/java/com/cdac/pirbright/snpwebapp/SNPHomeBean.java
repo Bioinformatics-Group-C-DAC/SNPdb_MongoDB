@@ -5,8 +5,9 @@
  */
 package com.cdac.pirbright.snpwebapp;
 
-import com.cdac.mongodb.MongoDBLoader;
-import com.cdac.mongodb.query.SNPChickenQuery;
+import in.cdac.pirbright.snpwebapp.OutputSNPBean;
+import in.cdac.pirbright.parser.vcf.VCFLoaderMongoDB;
+import in.cdac.pirbright.chicken.query.SNPChickenQuery;
 import com.cdac.pirbright.snpwebapp.config.Config;
 
 import java.io.BufferedWriter;
@@ -40,7 +41,7 @@ public class SNPHomeBean implements Serializable {
     private String searchOption;
     private boolean value1;
 
-    private MongoDBLoader mongoDBLoader;
+    private VCFLoaderMongoDB mongoDBLoader;
     private SNPChickenQuery main;
 //    private List<Temp> strList;
 
@@ -67,7 +68,7 @@ public class SNPHomeBean implements Serializable {
         ChickenLineInfo.add(new SelectItem("LineWellcome", "LineWellcome"));
         ChickenLineInfo.add(new SelectItem("LineZero", "LineZero"));
 
-        mongoDBLoader = new MongoDBLoader();
+        mongoDBLoader = new VCFLoaderMongoDB();
         Properties properties=new Properties();
         try {
             properties.load(new InputStreamReader(new FileInputStream(new File(System.getProperty("user.home")+File.separator + Config.CONFIG_PATH))));

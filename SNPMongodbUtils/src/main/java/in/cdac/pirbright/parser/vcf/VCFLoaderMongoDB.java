@@ -3,11 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.cdac.mongodb;
+package in.cdac.pirbright.parser.vcf;
 
-import com.cdac.vcfparser.VCFBean;
+import in.cdac.pirbright.mongodb.client.MongoClientSingleton;
+import in.cdac.pirbright.parser.vcf.VCFBean;
 import com.mongodb.MongoClient;
-import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.result.UpdateResult;
@@ -21,28 +21,26 @@ import org.bson.Document;
  *
  * @author ramki
  */
-public class MongoDBLoader {
+public class VCFLoaderMongoDB {
 
-    private MongoClient mongoClient;
-
-    private MongoDatabase database;
 
     private MongoCollection<Document> chickenCollection;
 
-    public void init(String host, int port, String mongoDatabase, String mongoCollection) {
-
-        mongoClient = new MongoClient(new ServerAddress(host, port));
-
-        database = mongoClient.getDatabase(mongoDatabase);
-
-        chickenCollection = database.getCollection(mongoCollection);
+    public VCFLoaderMongoDB(MongoCollection<Document> chickenCollection) {
+        this.chickenCollection = chickenCollection;
     }
+    
+    
+//
+//    public void init(MongoCollection<Document> chickenCollection) {
+//
+//
+//        this.chickenCollection = chickenCollection;
+//    }
 
     public MongoCollection<Document> getChickenCollection() {
         return chickenCollection;
     }
-    
-    
 
 //    public void insert(VCFBean vcfb, String vcfChickenLine) {
 //
@@ -130,8 +128,6 @@ public class MongoDBLoader {
 //        System.out.println("Total Count = " + (insertListOfDocument.size() + updateCounter + skipCounter));
     }
 
-    public void close() {
-        mongoClient.close();
-    }
+  
 
 }

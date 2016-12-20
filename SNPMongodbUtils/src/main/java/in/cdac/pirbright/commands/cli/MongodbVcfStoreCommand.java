@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.cdac.mongodb.cmd;
+package in.cdac.pirbright.commands.cli;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
@@ -15,7 +15,7 @@ import com.beust.jcommander.ParametersDelegate;
  */
 @Parameters(separators = "=", commandDescription = "Record inserted/updated into the repository")
 
-public class MongodbDumpCommand {
+public class MongodbVcfStoreCommand {
 
     @ParametersDelegate
     private MongoDBInfo mongoDBInfo = new MongoDBInfo();
@@ -37,6 +37,11 @@ public class MongodbDumpCommand {
     public int getProcessors() {
         return processors;
     }
+
+    public void setProcessors(int processors) {
+        this.processors = processors;
+    }
+    
 
     @Override
     public String toString() {

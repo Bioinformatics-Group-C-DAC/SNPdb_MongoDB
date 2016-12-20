@@ -3,12 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.cdac.mongodb.query;
+package in.cdac.pirbright.chicken.query;
 
-import com.cdac.mongodb.MongoDBLoader;
-import com.cdac.pirbright.snpwebapp.OutputSNPBean;
-import com.mongodb.MongoClient;
-import com.mongodb.ServerAddress;
+import in.cdac.pirbright.parser.vcf.VCFLoaderMongoDB;
+import in.cdac.pirbright.snpwebapp.OutputSNPBean;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
@@ -32,13 +30,24 @@ public class SNPChickenQuery {
     private MongoCollection<Document> collection;
 
     private String tab = "\t";
-    String nbsp = "&amp;nbsp";
+    // String nbsp = "&amp;nbsp";
 
     List<String> tempLeftList = new ArrayList<>();
     List<String> tempRightList = new ArrayList<>();
 
-    public SNPChickenQuery(MongoDBLoader mongoDBLoader) {
+    public SNPChickenQuery(VCFLoaderMongoDB mongoDBLoader) {
         collection = mongoDBLoader.getChickenCollection();
+    }
+
+    public List<OutputSNPBean> retriveVCFRecords(MongoDatabase database, String geneId, List<String> leftList, List<String> rightList) {
+
+        MongoCollection<Document> genetableCollection = database.getCollection("genetable");
+        Document geneDocument = genetableCollection.find(Filters.eq("_id", geneId)).first();
+        String chromosome = geneDocument.getString("chromosome");
+        long start = geneDocument.getLong("start");
+        long end = geneDocument.getLong("end");
+        return retriveVCFRecords(chromosome, start, end, leftList, rightList);
+
     }
 
     public List<OutputSNPBean> retriveVCFRecords(String chromosomeName, long position1, long position2, List<String> leftList, List<String> rightList) {
@@ -156,7 +165,7 @@ public class SNPChickenQuery {
         if (!dnaExists) {
 
             Map<String, String> map = new HashMap<>();
-            StringBuilder right = new StringBuilder();
+            //StringBuilder right = new StringBuilder();
 
             for (Document lineDocument : linesDocuments) {
                 Set lineSet = lineDocument.keySet();
@@ -209,30 +218,29 @@ public class SNPChickenQuery {
 
     }
 
-    public static void main(String[] args) {
-        MongoDBLoader mongoDBLoader = new MongoDBLoader();
-        mongoDBLoader.init("biograph", 27017, "pcsnp1", "chicken");
-        SNPChickenQuery main = new SNPChickenQuery(mongoDBLoader);
-
-        List<String> leftList = new ArrayList<>();
-        List<String> rightList = new ArrayList<>();
-
-        leftList.add("Line15");
-        //leftList.add("Linep");
-
-        rightList.add("Line7");
-
-        long startTime = System.currentTimeMillis();
-        List<OutputSNPBean> retriveVCFRecords = main.retriveVCFRecords("6", 18882796, 18931965, leftList, rightList);
-        System.out.println(retriveVCFRecords.size());
-        long endTime = System.currentTimeMillis();
-
-        System.out.println("Time taken : " + (endTime - startTime) + " ms");
-        for (OutputSNPBean retriveVCFRecord : retriveVCFRecords) {
-            System.out.println(retriveVCFRecord);
-        }
-        //  main.close();
-
-    }
-
+//    public static void main(String[] args) {
+//        VCFLoaderMongoDB mongoDBLoader = new VCFLoaderMongoDB();
+//        mongoDBLoader.init("biograph", 27017, "pcsnp1", "chicken");
+//        SNPChickenQuery main = new SNPChickenQuery(mongoDBLoader);
+//
+//        List<String> leftList = new ArrayList<>();
+//        List<String> rightList = new ArrayList<>();
+//
+//        leftList.add("Line15");
+//        //leftList.add("Linep");
+//
+//        rightList.add("Line7");
+//
+//        long startTime = System.currentTimeMillis();
+//        List<OutputSNPBean> retriveVCFRecords = main.retriveVCFRecords("6", 18882796, 18931965, leftList, rightList);
+//        System.out.println(retriveVCFRecords.size());
+//        long endTime = System.currentTimeMillis();
+//
+//        System.out.println("Time taken : " + (endTime - startTime) + " ms");
+//        for (OutputSNPBean retriveVCFRecord : retriveVCFRecords) {
+//            System.out.println(retriveVCFRecord);
+//        }
+//        //  main.close();
+//
+//    }
 }

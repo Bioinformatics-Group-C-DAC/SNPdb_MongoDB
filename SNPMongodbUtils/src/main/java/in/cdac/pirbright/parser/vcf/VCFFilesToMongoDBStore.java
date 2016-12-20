@@ -3,10 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.cdac.vcfparser;
+package in.cdac.pirbright.parser.vcf;
 
-import com.cdac.mongodb.MongoDBLoader;
-import com.cdac.mongodb.cmd.MongodbDumpCommand;
+import in.cdac.pirbright.commands.cli.MongodbVcfStoreCommand;
 import java.io.File;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -15,9 +14,9 @@ import java.util.concurrent.Executors;
  *
  * @author ramki
  */
-public class StoreVCFToMongoDB {
+public class VCFFilesToMongoDBStore {
 
-    public void submit(MongodbDumpCommand command, MongoDBLoader mongoDBLoader) {
+    public void submit(MongodbVcfStoreCommand command, VCFLoaderMongoDB mongoDBLoader) {
         ExecutorService executorService = Executors.newFixedThreadPool(command.getProcessors());
 
         File basePathFile = new File(command.getPath());

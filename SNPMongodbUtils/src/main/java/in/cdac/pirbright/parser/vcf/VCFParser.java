@@ -3,9 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.cdac.vcfparser;
+package in.cdac.pirbright.parser.vcf;
 
-import com.cdac.mongodb.MongoDBLoader;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -25,10 +24,10 @@ public class VCFParser implements Runnable {
 
     private static String HEADER_MARKER = "#";
     private static int RECORD_COUNT = 5000;
-    private MongoDBLoader mongoDBLoader;
+    private VCFLoaderMongoDB mongoDBLoader;
     private File vcfFile;
 
-    VCFParser(File vcfFile, MongoDBLoader mongoDBLoader) {
+    VCFParser(File vcfFile, VCFLoaderMongoDB mongoDBLoader) {
         this.vcfFile = vcfFile;
         this.mongoDBLoader = mongoDBLoader;
     }

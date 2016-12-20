@@ -5,6 +5,7 @@
  */
 package com.cdac.pirbright.snpwebapp;
 
+import in.cdac.pirbright.snpwebapp.OutputSNPBean;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
