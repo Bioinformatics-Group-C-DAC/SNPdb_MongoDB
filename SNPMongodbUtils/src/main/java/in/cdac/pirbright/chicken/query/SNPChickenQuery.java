@@ -245,7 +245,8 @@ public class SNPChickenQuery {
 
         long startTime = System.currentTimeMillis();
         
-        List<OutputSNPBean> retriveVCFRecords = main.retriveVCFRecords("324234", 18882796, 18931965, leftList, rightList);
+       // List<OutputSNPBean> retriveVCFRecords = main.retriveVCFRecords("324234", 18882796, 18931965, leftList, rightList);
+         List<OutputSNPBean> retriveVCFRecords = main.retriveVCFRecords(database,"hgjkhk", leftList, rightList);
         System.out.println(retriveVCFRecords.size());
         long endTime = System.currentTimeMillis();
 

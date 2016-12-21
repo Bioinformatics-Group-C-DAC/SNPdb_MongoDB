@@ -8,7 +8,12 @@
       xmlns:pe="http://primefaces.org/ui/extensions" 
       xmlns:p="http://xmlns.jcp.org/jsf/passthrough">
     <h:head>
-       
+        <style type="text/css">
+            .ui-selectonelistbox .ui-selectlistbox-listcontainer, 
+            .ui-selectmanymenu .ui-selectlistbox-listcontainer{
+
+            }
+        </style>
     </h:head>
     <h:body class="home image-sphere-style responsive yes_js">
         <f:view contentType="text/html">
@@ -25,7 +30,7 @@
                             
                             
                             <h:form id="formbasic" prependId="false" >  
-
+                                
 
                                 <table border="border" align="center" >
                                     <tr>
@@ -35,16 +40,16 @@
                                             <table>
                                                 <tr>
                                                     <td>
-                                                        <pri:selectBooleanCheckbox id="searchByRange" value="#{snpHomeBean.searchByRange}">                                                
-                                                            <f:ajax render=":formbasic:panelout :formbasic:searchByRange :formbasic:searchByGeneId"/>
+                                                        <pri:selectBooleanCheckbox value="#{snpHomeBean.searchByRange}">                                                
+                                                            <f:ajax render=":formbasic"/>
                                                         </pri:selectBooleanCheckbox>  
                                                         <h:outputLabel value="Use range with chromosome"/>
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        <pri:selectBooleanCheckbox id="searchByGeneId" value="#{snpHomeBean.searchByGeneId}"  >                                                
-                                                            <f:ajax render=":formbasic:panelout :formbasic:searchByGeneId :formbasic:searchByRange"/>
+                                                        <pri:selectBooleanCheckbox value="#{snpHomeBean.searchByGeneId}"  >                                                
+                                                            <f:ajax render=":formbasic"/>
                                                         </pri:selectBooleanCheckbox>  
                                                         <h:outputLabel value="Search By Gene Id"/>
                                                     </td>
@@ -62,33 +67,28 @@
                                     
                                     <tr>
                                         <td>
-                                            <pri:selectManyMenu value="#{snpHomeBean.selectedChickenLineInfoSetOne}"  
+                                            <h:selectManyMenu value="#{snpHomeBean.selectedChickenLineInfoSetOne}"  
                                                               style="height: 90px;width: 200px;text-align: left;
                                                               overflow-y: scroll" >  
                                                 <f:selectItems value="#{snpHomeBean.chickenLineInfo}" 
                                                                itemLabel="#{snpHomeBean.chickenLineInfo}" 
                                                                itemValue="#{snpHomeBean.chickenLineInfo}" />                                             
-
                                             </h:selectManyMenu>                                           
-
 
                                         </td>
                                         <td>
-                                            <pri:selectManyMenu value="#{snpHomeBean.selectedChickenLineInfoSetTwo}"  
+                                            <h:selectManyMenu value="#{snpHomeBean.selectedChickenLineInfoSetTwo}"  
                                                               style="height: 90px;width: 200px;text-align: left;overflow-y: scroll"   >  
                                                 <f:selectItems value="#{snpHomeBean.chickenLineInfo}" 
                                                                itemLabel="#{snpHomeBean.chickenLineInfo}" 
                                                                itemValue="#{snpHomeBean.chickenLineInfo}" />                                             
-                                            </pri:selectManyMenu>
+                                            </h:selectManyMenu>
                                         </td>
                                         <td>
-                                            <pri:panel id="panelout" style="border: none;background-color: transparent;">
-                                                
-                                            
                                             <pri:panel id="one"  rendered="#{snpHomeBean.searchByGeneId}">
                                                 <h:panelGrid id="bygeneid" columns="2" >
                                                     <h:outputLabel value="Gene Id"/>                                        
-                                                    <h:inputText value="#{snpHomeBean.geneId}" />
+                                                    <h:inputText value="#{snpAdvSearchBean.geneId}" />
 
                                                 </h:panelGrid>
                                             </pri:panel>
@@ -112,10 +112,9 @@
 
                                                </h:panelGrid>
                                             </pri:panel>
-                                                </pri:panel>
                                         </td>
                                             <td valign="bottom">
-                                                <pri:commandButton id="saveBtn" update="formbasic msgadv resulttbl"
+                                                <pri:commandButton id="saveBtn" update="formbasic msgadv"
                                                                    action="#{snpHomeBean.submit()}" value="Submit" 
                                                                    onstart="PF('blockUIWidget').block()"  
                                                                    oncomplete="PF('blockUIWidget').unblock()"/>
@@ -124,7 +123,7 @@
                                     </tr>
 
                                 </table>
-                                <pe:blockUI widgetVar="blockUIWidget"
+                             <pe:blockUI widgetVar="blockUIWidget"
                                             cssOverlay="{backgroundColor: 'red'}">
                                     <h:panelGrid columns="2">
                                         <h:graphicImage library="images" name="ajax-loader-1.gif"  height="40px" width="40px"
@@ -144,9 +143,7 @@
 
 
 
-
-                                <pri:dataTable id="resulttbl" var="sequence" value="#{snpHomeBean.outputSNPBeans}" 
-
+                                <pri:dataTable var="sequence" value="#{snpHomeBean.outputSNPBeans}" 
                                                rows="500"
                                                paginator="true" scrollable="true" scrollHeight="450"
                                                paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
