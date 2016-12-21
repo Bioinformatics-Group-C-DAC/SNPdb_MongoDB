@@ -5,11 +5,7 @@
  */
 package in.cdac.pirbright.parser.vcf;
 
-import in.cdac.pirbright.mongodb.client.MongoClientSingleton;
-import in.cdac.pirbright.parser.vcf.VCFBean;
-import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.result.UpdateResult;
 import java.util.ArrayList;
 import java.util.Arrays;

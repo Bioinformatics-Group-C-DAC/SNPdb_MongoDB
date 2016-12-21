@@ -5,12 +5,14 @@
  */
 package in.cdac.pirbright.chicken.query;
 
+import com.mongodb.MongoClient;
 import in.cdac.pirbright.parser.vcf.VCFLoaderMongoDB;
 import in.cdac.pirbright.snpwebapp.OutputSNPBean;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
+import in.cdac.pirbright.mongodb.client.MongoClientSingleton;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -43,6 +45,9 @@ public class SNPChickenQuery {
 
         MongoCollection<Document> genetableCollection = database.getCollection("genetable");
         Document geneDocument = genetableCollection.find(Filters.eq("_id", geneId)).first();
+        if(geneDocument==null){
+            return null;
+        }
         String chromosome = geneDocument.getString("chromosome");
         long start = geneDocument.getLong("start");
         long end = geneDocument.getLong("end");
@@ -51,6 +56,7 @@ public class SNPChickenQuery {
     }
 
     public List<OutputSNPBean> retriveVCFRecords(String chromosomeName, long position1, long position2, List<String> leftList, List<String> rightList) {
+        
         Collections.sort(leftList);
         Collections.sort(rightList);
 
@@ -80,6 +86,7 @@ public class SNPChickenQuery {
 
         FindIterable<Document> result = this.collection.find(filter);
 
+        
         List<OutputSNPBean> listOfVCFStrings = new ArrayList<>();
 
         StringBuilder sb = new StringBuilder();
@@ -218,29 +225,35 @@ public class SNPChickenQuery {
 
     }
 
-//    public static void main(String[] args) {
-//        VCFLoaderMongoDB mongoDBLoader = new VCFLoaderMongoDB();
-//        mongoDBLoader.init("biograph", 27017, "pcsnp1", "chicken");
-//        SNPChickenQuery main = new SNPChickenQuery(mongoDBLoader);
-//
-//        List<String> leftList = new ArrayList<>();
-//        List<String> rightList = new ArrayList<>();
-//
-//        leftList.add("Line15");
-//        //leftList.add("Linep");
-//
-//        rightList.add("Line7");
-//
-//        long startTime = System.currentTimeMillis();
-//        List<OutputSNPBean> retriveVCFRecords = main.retriveVCFRecords("6", 18882796, 18931965, leftList, rightList);
-//        System.out.println(retriveVCFRecords.size());
-//        long endTime = System.currentTimeMillis();
-//
-//        System.out.println("Time taken : " + (endTime - startTime) + " ms");
-//        for (OutputSNPBean retriveVCFRecord : retriveVCFRecords) {
-//            System.out.println(retriveVCFRecord);
-//        }
-//        //  main.close();
-//
-//    }
+    public static void main(String[] args) {
+        
+         MongoClient mongoClient = MongoClientSingleton.getInstance("biograph", 27017);
+        MongoDatabase database = mongoClient.getDatabase("pcsnp");
+        MongoCollection<Document> collection = database.getCollection("chicken");
+        VCFLoaderMongoDB mongoDBLoader = new VCFLoaderMongoDB(collection);
+       
+        SNPChickenQuery main = new SNPChickenQuery(mongoDBLoader);
+
+        List<String> leftList = new ArrayList<>();
+        List<String> rightList = new ArrayList<>();
+
+        leftList.add("Line15");
+        //leftList.add("Linep");
+
+        rightList.add("Line7");
+        
+
+        long startTime = System.currentTimeMillis();
+        
+        List<OutputSNPBean> retriveVCFRecords = main.retriveVCFRecords("324234", 18882796, 18931965, leftList, rightList);
+        System.out.println(retriveVCFRecords.size());
+        long endTime = System.currentTimeMillis();
+
+        System.out.println("Time taken : " + (endTime - startTime) + " ms");
+        for (OutputSNPBean retriveVCFRecord : retriveVCFRecords) {
+            System.out.println(retriveVCFRecord);
+        }
+        //  main.close();
+
+    }
 }
