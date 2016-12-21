@@ -189,7 +189,7 @@ public class SNPHomeBean implements Serializable {
                 }else{
                     outputSNPBeans = callNoSQLMongoDBSearchByGeneId(setone, setTwo, geneId);
                 }                
-                System.out.println(outputSNPBeans.size());
+              //  System.out.println(outputSNPBeans.size());
 
             }
 
