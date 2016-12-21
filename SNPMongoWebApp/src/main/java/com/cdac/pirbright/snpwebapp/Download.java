@@ -5,6 +5,7 @@
  */
 package com.cdac.pirbright.snpwebapp;
 
+import in.cdac.pirbright.snpwebapp.OutputSNPBean;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
@@ -44,7 +45,7 @@ public class Download extends HttpServlet {
                 response.setHeader("Content-Disposition", "attachment; filename=\"snpdata.txt\"");
                 
                 try (PrintWriter writer = response.getWriter()) {
-                    writer.print("Chromosome"+"\t"+"Chromosome_Position\tRef\tSetOne\tSetTwo\n");
+                    writer.print("Chromosome"+"\t"+"Position\tChromosome_Position\tRef\tSetOne\tSetTwo\n");
                     for (OutputSNPBean outputSNPBean : outputSNPBeans) {
                         writer.println(outputSNPBean);
                     }

@@ -5,9 +5,14 @@
  */
 package com.cdac.pirbright.snpwebapp;
 
-import com.cdac.mongodb.MongoDBLoader;
-import com.cdac.mongodb.query.SNPChickenQuery;
 import com.cdac.pirbright.snpwebapp.config.Config;
+import com.mongodb.MongoClient;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import in.cdac.pirbright.chicken.query.SNPChickenQuery;
+import in.cdac.pirbright.mongodb.client.MongoClientSingleton;
+import in.cdac.pirbright.parser.vcf.VCFLoaderMongoDB;
+import in.cdac.pirbright.snpwebapp.OutputSNPBean;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -28,6 +33,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.inject.Named;
+import org.bson.Document;
 
 /**
  *
@@ -38,21 +44,49 @@ import javax.inject.Named;
 public class SNPHomeBean implements Serializable {
 
     private String searchOption;
-    private boolean value1;
+//    private boolean value1;
 
-    private MongoDBLoader mongoDBLoader;
-    private SNPChickenQuery main;
+    private SNPChickenQuery chickenQuery;
+
 //    private List<Temp> strList;
-
     private List<String> selectedChickenLineInfoSetOne;
 
     private List<SelectItem> ChickenLineInfo;
 
     private List<String> selectedChickenLineInfoSetTwo;
     private String chromosome;
-    private long startPosition=1;
+    private long startPosition = 1;
 
     List<OutputSNPBean> outputSNPBeans = new ArrayList<>();
+
+    private MongoClient mongoClient;
+    private MongoDatabase database;
+    private MongoCollection<Document> collection;
+
+    private boolean searchByRange;
+    private boolean searchByGeneId;
+
+    public boolean isSearchByRange() {
+        return searchByRange;
+    }
+
+    public void setSearchByRange(boolean searchByRange) {
+        this.searchByRange = searchByRange;
+        if (searchByRange) {
+            setSearchByGeneId(false);
+        }
+    }
+
+    public boolean isSearchByGeneId() {
+        return searchByGeneId;
+    }
+
+    public void setSearchByGeneId(boolean searchByGeneId) {
+        this.searchByGeneId = searchByGeneId;
+        if (searchByGeneId) {
+            setSearchByRange(false);
+        }
+    }
 
     @PostConstruct
     public void init() {
@@ -67,23 +101,33 @@ public class SNPHomeBean implements Serializable {
         ChickenLineInfo.add(new SelectItem("LineWellcome", "LineWellcome"));
         ChickenLineInfo.add(new SelectItem("LineZero", "LineZero"));
 
-        mongoDBLoader = new MongoDBLoader();
-        Properties properties=new Properties();
+        Properties properties = new Properties();
         try {
-            properties.load(new InputStreamReader(new FileInputStream(new File(System.getProperty("user.home")+File.separator + Config.CONFIG_PATH))));
+            properties.load(new InputStreamReader(new FileInputStream(new File(System.getProperty("user.home") + File.separator + Config.CONFIG_PATH))));
         } catch (IOException ex) {
             Logger.getLogger(SNPHomeBean.class.getName()).log(Level.SEVERE, null, ex);
         }
         System.out.println(properties);
-        mongoDBLoader.init(properties.getProperty(Config.MONGO_DB_HOST), Integer.parseInt(properties.getProperty(Config.MONGO_DB_PORT)), properties.getProperty(Config.MONGO_DB_DATABASE_NAME), properties.getProperty(Config.MONGO_DB_COLLECTION_NAME));
-        main = new SNPChickenQuery(mongoDBLoader);
+        mongoClient = MongoClientSingleton.getInstance(properties.getProperty(Config.MONGO_DB_HOST), Integer.parseInt(properties.getProperty(Config.MONGO_DB_PORT)));
+        database = mongoClient.getDatabase(properties.getProperty(Config.MONGO_DB_DATABASE_NAME));
+        collection = database.getCollection(properties.getProperty(Config.MONGO_DB_COLLECTION_NAME));
+        VCFLoaderMongoDB mongoDBLoader = new VCFLoaderMongoDB(collection);
+        chickenQuery = new SNPChickenQuery(mongoDBLoader);
     }
 
     String strPosition;
     BufferedWriter writer = null;
-
+    private String geneId;
     private String setOneHeader = "SetOne";
     private String setTwoHeader = "SetTwo";
+
+    public String getGeneId() {
+        return geneId;
+    }
+
+    public void setGeneId(String geneId) {
+        this.geneId = geneId;
+    }
 
     public List<SelectItem> getChickenLineInfo() {
         return ChickenLineInfo;
@@ -118,29 +162,45 @@ public class SNPHomeBean implements Serializable {
     public void setTotalcount(String totalcount) {
         this.totalcount = totalcount;
     }
-    
+
     public void submit() {
-        outputSNPBeans=null;
-        
+        outputSNPBeans = null;
+
         if (getSelectedChickenLineInfoSetOne().size() > 0 && getSelectedChickenLineInfoSetTwo().size() > 0) {
             String setone = makeCommaSeperatedString(getSelectedChickenLineInfoSetOne());
             String setTwo = makeCommaSeperatedString(getSelectedChickenLineInfoSetTwo());
 
-            if (value1) {
+            if (isSearchByRange()) {
+                System.out.println("in Serach By Range");
                 String ch = getChromosome().substring(0, getChromosome().indexOf(':'));
                 strPosition = getChromosome().substring(getChromosome().indexOf(':') + 1, getChromosome().length());
 
-//                strList = chickenLineInfoFacade.callNOSQLMongoDB(setone, setTwo,ch,strPosition);
-                outputSNPBeans = callNOSQLMongoDB(setone, setTwo, ch, strPosition);
+                //                strList = chickenLineInfoFacade.callNOSQLMongoDB(setone, setTwo,ch,strPosition);
+                outputSNPBeans = callNoSQLMongoDB(setone, setTwo, ch, strPosition);
             }
 
-            if (!value1) {
+            if (isSearchByGeneId()) {
+                System.out.println("In Search By GeneiD");
+
+                if (getGeneId().equals("") || getGeneId().length() <= 0) {
+                    FacesContext.getCurrentInstance().addMessage(null,
+                            new FacesMessage("Enter valid Gene Id!!!"));
+                    outputSNPBeans=null;
+                }else{
+                    outputSNPBeans = callNoSQLMongoDBSearchByGeneId(setone, setTwo, geneId);
+                }                
+                System.out.println(outputSNPBeans.size());
+
+            }
+
+            if (!isSearchByGeneId() && !isSearchByRange()) {
+                System.out.println("in search By Normal");
 
                 if ((!(getChromosome().equals("")) || getChromosome().length() > 0)
                         && (getStartPosition() > 0 && getEndPosition() > 0)) {
                     strPosition = startPosition + "-" + endPosition;
 //                     strList = chickenLineInfoFacade.callNOSQLMongoDB(setone, setTwo,getChromosome(),strPosition);
-                    outputSNPBeans = callNOSQLMongoDB(setone, setTwo, getChromosome(), strPosition);
+                    outputSNPBeans = callNoSQLMongoDB(setone, setTwo, getChromosome(), strPosition);
 
                 }
 
@@ -174,21 +234,20 @@ public class SNPHomeBean implements Serializable {
                 }
 
             }
-            if(outputSNPBeans!=null){
-                totalcount = Integer.toString(outputSNPBeans.size());
-            }else{
-                totalcount="";
-            }
             
-            //compare(getStrList());
+            
+            if (outputSNPBeans != null) {
+                totalcount = Integer.toString(outputSNPBeans.size());
+            } else {
+                totalcount = "";
+            }
 
+            //compare(getStrList());
         }
 
     }
 
-    
-    
-    public List<OutputSNPBean> callNOSQLMongoDB(String setone, String setTwo, String chromosome, String position) {
+    public List<OutputSNPBean> callNoSQLMongoDB(String setone, String setTwo, String chromosome, String position) {
         String[] sa = setone.split(",");
         String[] sb = setTwo.split(",");
         String[] posa = position.split("-");
@@ -200,8 +259,27 @@ public class SNPHomeBean implements Serializable {
         setTwoHeader = String.join(",", rightList);
 
         long startTime = System.currentTimeMillis();
-        List<OutputSNPBean> retriveVCFRecords = main.retriveVCFRecords(chromosome, pos1, pos2, leftList, rightList);
+        List<OutputSNPBean> retriveVCFRecords = chickenQuery.retriveVCFRecords(chromosome, pos1, pos2, leftList, rightList);
         System.out.println(retriveVCFRecords.size());
+        long endTime = System.currentTimeMillis();
+
+        System.out.println("Time taken : " + (endTime - startTime) + " ms");
+
+        return retriveVCFRecords;
+    }
+
+    public List<OutputSNPBean> callNoSQLMongoDBSearchByGeneId(String setone, String setTwo, String geneId) {
+        String[] sa = setone.split(",");
+        String[] sb = setTwo.split(",");
+
+        List<String> leftList = Arrays.asList(sa);
+        List<String> rightList = Arrays.asList(sb);
+        setOneHeader = String.join(",", leftList);
+        setTwoHeader = String.join(",", rightList);
+
+        long startTime = System.currentTimeMillis();
+        List<OutputSNPBean> retriveVCFRecords = chickenQuery.retriveVCFRecords(database, geneId, leftList, rightList);
+        
         long endTime = System.currentTimeMillis();
 
         System.out.println("Time taken : " + (endTime - startTime) + " ms");
@@ -256,14 +334,13 @@ public class SNPHomeBean implements Serializable {
         return searchOption;
     }
 
-    public boolean isValue1() {
-        return value1;
-    }
-
-    public void setValue1(boolean value1) {
-        this.value1 = value1;
-    }
-
+//    public boolean isValue1() {
+//        return value1;
+//    }
+//
+//    public void setValue1(boolean value1) {
+//        this.value1 = value1;
+//    }
     public void setSearchOption(String searchOption) {
         this.searchOption = searchOption;
     }
@@ -284,7 +361,7 @@ public class SNPHomeBean implements Serializable {
         this.endPosition = endPosition;
     }
 
-    private long endPosition=1;
+    private long endPosition = 1;
 
     public String getChromosome() {
         return chromosome;
