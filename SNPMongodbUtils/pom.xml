@@ -52,7 +52,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>com.cdac.mongodb.MongodbCommandParser</mainClass>
+                            <mainClass>in.cdac.pirbright.main.CommandParser</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

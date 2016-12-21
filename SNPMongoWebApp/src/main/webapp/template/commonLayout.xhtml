@@ -5,6 +5,9 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:pri="http://primefaces.org/ui" 
+      xmlns:pe="http://primefaces.org/ui/extensions" 
+      xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
       >
     <f:view contentType="text/html">
         <h:head>
@@ -108,6 +111,8 @@
                     </ui:insert>
                     
                     <ui:insert name="content">
+                       
+                        
                         <ui:include src="commonContent.xhtml"/>
                     </ui:insert>
                     
