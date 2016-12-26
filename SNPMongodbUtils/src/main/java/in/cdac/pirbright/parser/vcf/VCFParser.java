@@ -129,7 +129,7 @@ public class VCFParser implements Runnable {
 //        mongoDBLoader.insert(beans, vcfChickenLine, count);
 //    }
     private void storeVCFBean(List<VCFBean> beans, String vcfChickenLine, int count) {
-        mongoDBLoader.update(beans, vcfChickenLine, count);
+        mongoDBLoader.upsert(beans, vcfChickenLine, count);
     }
 
 }

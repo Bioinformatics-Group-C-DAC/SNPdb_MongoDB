@@ -47,7 +47,7 @@ public class CommandParser {
             //jc.parse( "store","-h","biograph","-d", "db1","-c", "chick","-i","/home/");
             //  jc.parse("store", "-i", "/home/", "-e");
             //
-            vcfstore.setProcessors(1);
+           // vcfstore.setProcessors(1);
             jc.parse(args);
 
             if (SNPCommand.VCF_STORE_COMMAND.equals(jc.getParsedCommand())) {

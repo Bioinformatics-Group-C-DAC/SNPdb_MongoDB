@@ -5,7 +5,10 @@
  */
 package in.cdac.pirbright.parser.vcf;
 
+import com.mongodb.MongoWriteException;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.UpdateOptions;
+import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.UpdateResult;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,21 +22,20 @@ import org.bson.Document;
  */
 public class VCFLoaderMongoDB {
 
-
     private MongoCollection<Document> chickenCollection;
 
     public VCFLoaderMongoDB(MongoCollection<Document> chickenCollection) {
         this.chickenCollection = chickenCollection;
+        updateOptions.upsert(true);
+
     }
-    
-    
+
 //
 //    public void init(MongoCollection<Document> chickenCollection) {
 //
 //
 //        this.chickenCollection = chickenCollection;
 //    }
-
     public MongoCollection<Document> getChickenCollection() {
         return chickenCollection;
     }
@@ -124,6 +126,60 @@ public class VCFLoaderMongoDB {
 //        System.out.println("Total Count = " + (insertListOfDocument.size() + updateCounter + skipCounter));
     }
 
-  
+    UpdateOptions updateOptions = new UpdateOptions();
+
+    UpdateResult updateOne;
+
+    public void upsert(List<VCFBean> beans, String vcfChickenLine, int count) {
+
+        for (int i = 0; i < count; i++) {
+            VCFBean vcfb = beans.get(i);
+
+            Document filterDocument = new Document("_id", new BsonString(vcfb.getChromosome() + ":" + vcfb.getPosition()))
+                    .append("Chromosome", vcfb.getChromosome())
+                    .append("Position", vcfb.getPosition())
+                    .append("ID", vcfb.getId())
+                    .append("REF", vcfb.getRef());
+
+            Document innerDoc = new Document("ALT", vcfb.getAlt());
+            Document lineDoc = new Document(vcfChickenLine, innerDoc);
+
+            //Document chickenLineDocument=new Document().append(Updates.push("Lines", vcfb), lineDoc)
+            do {
+                try {
+                    updateOne = chickenCollection.updateOne(filterDocument, Updates.push("Lines", lineDoc), updateOptions);
+                    
+                } catch (MongoWriteException e) {
+                    System.out.println(filterDocument.toJson() + "===" + lineDoc.toJson());
+                    updateOne = null;
+                }
+
+            } while (updateOne == null);
+        }
+
+    }
+    
+    public void insert(List<VCFBean> beans, String vcfChickenLine, int count) {
+
+        List<Document> list=new ArrayList<>(count);
+        for (int i = 0; i < count; i++) {
+            VCFBean vcfb = beans.get(i);
+
+            Document filterDocument = new Document()
+                    .append("Chromosome", vcfb.getChromosome())
+                    .append("Position", vcfb.getPosition())
+                    .append("ID", vcfb.getId())
+                    .append("REF", vcfb.getRef());
+
+            Document innerDoc = new Document("ALT", vcfb.getAlt());
+            Document lineDoc = new Document(vcfChickenLine, innerDoc);
+
+            filterDocument.append("Lines",lineDoc );
+            list.add(filterDocument);
+           
+        }
+         chickenCollection.insertMany(list);
+
+    }
 
 }
