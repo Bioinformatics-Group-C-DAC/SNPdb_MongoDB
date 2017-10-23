@@ -65,8 +65,21 @@
     here __/vcf__ is directory path where all vcf files are there
     
     Note : Its time consume task its may take upto 6 to 7 hrs to load 8 vcf files (7.2 GB)
+  
+ 3. Create Index for faster quering, start mongo shell
+	
+     ```sh
+     mongo
+     
+    > use pcsnp
+     
+    > db.chicken.createIndex({"Chromosome":1,"Position":1})
     
- 3. To query the MongoDB use query sub command
+    	Its create compound index
+ 
+ 
+    
+ 4. To query the MongoDB use query sub command
 	
      ```sh
      java -jar SNPMongodbUtils/target/ChickenSNP-1.0-jar-with-dependencies.jar query --host localhost --port 27017 --database pcsnp --collection chicken --chromosome 1 --start 1000  --end 100000 -left LineN -left Line6 -right LineC
