@@ -60,7 +60,7 @@
  2. Load the vcf files into Mongodb
  
     ```sh
-    java -jar SNPMongodbUtils/target/SNPMongodbUtils/target/ChickenSNP-1.0-jar-with-dependencies.jar store --host localhost --port 27017 --database pcsnp --collection chicken --inputpath /vcf 
+    java -jar SNPMongodbUtils/target/ChickenSNP-1.0-jar-with-dependencies.jar store --host localhost --port 27017 --database pcsnp --collection chicken --inputpath /vcf 
     ```
     here __/vcf__ is directory path where all vcf files are there
     
