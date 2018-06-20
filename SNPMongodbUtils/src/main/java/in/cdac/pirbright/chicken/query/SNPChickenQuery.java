@@ -43,14 +43,16 @@ public class SNPChickenQuery {
 
     public List<OutputSNPBean> retriveVCFRecords(MongoDatabase database, String geneId, List<String> leftList, List<String> rightList) {
 
-        MongoCollection<Document> genetableCollection = database.getCollection("genetable");
+        MongoCollection<Document> genetableCollection = database.getCollection("gentable");
         Document geneDocument = genetableCollection.find(Filters.eq("_id", geneId)).first();
+         System.out.println("Gene Id : "+geneId+"\t Gene Doc : "+ geneDocument);
         if(geneDocument==null){
             return null;
         }
         String chromosome = geneDocument.getString("chromosome");
         long start = geneDocument.getLong("start");
         long end = geneDocument.getLong("end");
+        System.out.println("Gene Id : "+geneId+"\t chromosome : "+chromosome+"\t start : "+start+"\t end : "+end);
         return retriveVCFRecords(chromosome, start, end, leftList, rightList);
 
     }

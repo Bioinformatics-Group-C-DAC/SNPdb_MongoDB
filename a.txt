@@ -1,0 +1,113 @@
+MongoDB Database Host   : localhost
+MongoDB Database Port   : 27017
+MongoDB Database Name   : snp
+MongoDB Collection Name : gentable
+
+
+Jun 19, 2018 9:42:56 PM com.mongodb.diagnostics.logging.JULLogger log
+INFO: Cluster created with settings {hosts=[localhost:27017], mode=SINGLE, requiredClusterType=UNKNOWN, serverSelectionTimeout='30000 ms', maxWaitQueueSize=500}
+Parsing Gene File Name : ProteinTable111_374862.txt
+Jun 19, 2018 9:42:56 PM com.mongodb.diagnostics.logging.JULLogger log
+INFO: Opened connection [connectionId{localValue:1, serverValue:7}] to localhost:27017
+Jun 19, 2018 9:42:56 PM com.mongodb.diagnostics.logging.JULLogger log
+INFO: Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, version=ServerVersion{versionList=[3, 4, 10]}, minWireVersion=0, maxWireVersion=5, maxDocumentSize=16777216, roundTripTimeNanos=577995}
+Count=5000	GeneCount=5000
+Jun 19, 2018 9:42:56 PM com.mongodb.diagnostics.logging.JULLogger log
+INFO: Opened connection [connectionId{localValue:2, serverValue:8}] to localhost:27017
+Bulk write operation error on server localhost:27017. Write errors: [BulkWriteError{index=1, code=11000, message='E11000 duplicate key error collection: snp.gentable index: _id_ dup key: { : "NW_020109758.1" }', details={ }}]. 
+com.mongodb.MongoBulkWriteException: Bulk write operation error on server localhost:27017. Write errors: [BulkWriteError{index=1, code=11000, message='E11000 duplicate key error collection: snp.gentable index: _id_ dup key: { : "NW_020109758.1" }', details={ }}]. 
+	at com.mongodb.connection.BulkWriteBatchCombiner.getError(BulkWriteBatchCombiner.java:176)
+	at com.mongodb.connection.BulkWriteBatchCombiner.throwOnError(BulkWriteBatchCombiner.java:205)
+	at com.mongodb.connection.BulkWriteBatchCombiner.getResult(BulkWriteBatchCombiner.java:146)
+	at com.mongodb.operation.MixedBulkWriteOperation$1.call(MixedBulkWriteOperation.java:188)
+	at com.mongodb.operation.MixedBulkWriteOperation$1.call(MixedBulkWriteOperation.java:168)
+	at com.mongodb.operation.OperationHelper.withConnectionSource(OperationHelper.java:422)
+	at com.mongodb.operation.OperationHelper.withConnection(OperationHelper.java:413)
+	at com.mongodb.operation.MixedBulkWriteOperation.execute(MixedBulkWriteOperation.java:168)
+	at com.mongodb.operation.MixedBulkWriteOperation.execute(MixedBulkWriteOperation.java:74)
+	at com.mongodb.Mongo.execute(Mongo.java:845)
+	at com.mongodb.Mongo$2.execute(Mongo.java:828)
+	at com.mongodb.MongoCollectionImpl.insertMany(MongoCollectionImpl.java:338)
+	at com.mongodb.MongoCollectionImpl.insertMany(MongoCollectionImpl.java:322)
+	at in.cdac.pirbright.parser.gene.GeneLoaderMongoDB.insert(GeneLoaderMongoDB.java:60)
+	at in.cdac.pirbright.parser.gene.GeneParser.storeGeneBean(GeneParser.java:116)
+	at in.cdac.pirbright.parser.gene.GeneParser.parse(GeneParser.java:77)
+	at in.cdac.pirbright.parser.gene.GeneFilesToMongoDBStore.submit(GeneFilesToMongoDBStore.java:32)
+	at in.cdac.pirbright.main.CommandParser.main(CommandParser.java:68)
+Usage: <main class> [options] [command] [command options]
+  Commands:
+    store      Record inserted/updated into the repository
+      Usage: store [options]
+        Options:
+          --collection, -c
+            MogoDB Collection/Table Name
+            Default: chicken
+          --database, -d
+            MogoDB Database Name
+            Default: pcsnp
+          --host, -h
+            MogoDB Server IP address
+            Default: localhost
+        * --inputpath, -i
+            Input directory Path
+          --port, -p
+            MogoDB Server Port
+            Default: 27017
+          --processors, -proc
+            Number of Processors
+            Default: 1
+
+    query      Record fetched/retrieved from the repository
+      Usage: query [options]
+        Options:
+          --chromosome, -ch
+            Chromosome Name
+            Default: 1
+          --collection, -c
+            MogoDB Collection/Table Name
+            Default: chicken
+          --database, -d
+            MogoDB Database Name
+            Default: pcsnp
+          --end, -e
+            End Position (inclusive)
+            Default: 1
+          --gene, -g
+            Gene ID
+          --host, -h
+            MogoDB Server IP address
+            Default: localhost
+          --output, -o
+            OutPut File Name
+          --port, -p
+            MogoDB Server Port
+            Default: 27017
+          --start, -s
+            Start Position (inclusive)
+            Default: 1
+        * -left
+            Left
+            Default: []
+        * -right
+            Right
+            Default: []
+
+    genestore      Gene Table info stored into the repository
+      Usage: genestore [options]
+        Options:
+          --collection, -c
+            MogoDB Collection/Table Name
+            Default: chicken
+          --database, -d
+            MogoDB Database Name
+            Default: pcsnp
+          --host, -h
+            MogoDB Server IP address
+            Default: localhost
+        * --inputpath, -i
+            Gene File/Files Input directory Path
+          --port, -p
+            MogoDB Server Port
+            Default: 27017
+
+

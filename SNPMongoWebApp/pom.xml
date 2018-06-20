@@ -15,13 +15,23 @@
     </parent>
     
     <properties>
-        <version.wildfly.swarm>2016.12.0</version.wildfly.swarm>
+        <version.wildfly.swarm>2017.9.4</version.wildfly.swarm>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <failOnMissingWebXml>false</failOnMissingWebXml>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+
+    <repositories>
+        <repository>
+            <id>prime-repo</id>
+            <name>PrimeFaces Maven Repository</name>
+            <url>http://repository.primefaces.org</url>
+            <layout>default</layout>
+        </repository>
+
+    </repositories>
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -37,12 +47,11 @@
     <build>
         <finalName>SNPWebApp</finalName>
         <plugins>
-            
-            <!-- For swarm build (Micro Profile)-->
             <plugin>
                 <groupId>org.wildfly.swarm</groupId>
                 <artifactId>wildfly-swarm-plugin</artifactId>
                 <version>${version.wildfly.swarm}</version>
+        
                 <executions>
                     <execution>
                         <goals>
@@ -51,16 +60,6 @@
                     </execution>
                 </executions>
             </plugin>
-            
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>2.3</version>
-                <configuration>
-                    <failOnMissingWebXml>false</failOnMissingWebXml>
-                </configuration>
-            </plugin>
-            
         </plugins>
     </build>
 
@@ -97,35 +96,27 @@
         </dependency>
     
 
-        <!-- Java EE 7 dependency -->
+      
+        <!-- WildFly Swarm Fractions -->
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>
             <version>7.0</version>
             <scope>provided</scope>
         </dependency>
-        
         <!-- WildFly Swarm Fractions -->
         <dependency>
             <groupId>org.wildfly.swarm</groupId>
             <artifactId>jsf</artifactId>
         </dependency>
-
-  
         <dependency>
             <groupId>org.wildfly.swarm</groupId>
             <artifactId>cdi</artifactId>
         </dependency>
+    
     </dependencies>
     
-    <repositories>
-        <repository>
-            <id>prime-repo</id>
-            <name>PrimeFaces Maven Repository</name>
-            <url>http://repository.primefaces.org</url>
-            <layout>default</layout>
-        </repository>
-    </repositories>
+    
             
        
   

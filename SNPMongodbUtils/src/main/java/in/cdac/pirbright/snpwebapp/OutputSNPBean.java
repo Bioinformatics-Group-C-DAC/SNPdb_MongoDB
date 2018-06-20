@@ -5,6 +5,8 @@
  */
 package in.cdac.pirbright.snpwebapp;
 
+import java.util.List;
+
 /**
  *
  * @author renu
@@ -29,8 +31,10 @@ public class OutputSNPBean {
     private String Ref;
 
     private String SetOne;
-    
+
     private String SetTwo;
+
+    private List<String> listOfGenes;
 
     public String getSetOne() {
         return SetOne;
@@ -51,14 +55,20 @@ public class OutputSNPBean {
     public OutputSNPBean() {
     }
 
-    
-    
     public OutputSNPBean(String Chromosome, long Chromosome_Position, String Ref, String SetOne, String SetTwo) {
         this.Chromosome = Chromosome;
         this.Chromosome_Position = Chromosome_Position;
         this.Ref = Ref;
         this.SetOne = SetOne;
         this.SetTwo = SetTwo;
+    }
+
+    public List<String> getListOfGenes() {
+        return listOfGenes;
+    }
+
+    public void setListOfGenes(List<String> listOfGenes) {
+        this.listOfGenes = listOfGenes;
     }
 
     public String getRecordID() {
@@ -95,10 +105,7 @@ public class OutputSNPBean {
 
     @Override
     public String toString() {
-        return Chromosome + "\t" + Chromosome_Position + "\t"+ Ref + "\t" + SetOne + "\t" + SetTwo;
+        return Chromosome + "\t" + Chromosome_Position + "\t" + Ref + "\t" + SetOne + "\t" + SetTwo;
     }
-    
-    
-    
 
 }

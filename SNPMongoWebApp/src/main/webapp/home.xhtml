@@ -8,7 +8,7 @@
       xmlns:pe="http://primefaces.org/ui/extensions" 
       xmlns:p="http://xmlns.jcp.org/jsf/passthrough">
     <h:head>
-       
+
     </h:head>
     <h:body class="home image-sphere-style responsive yes_js">
         <f:view contentType="text/html">
@@ -22,8 +22,8 @@
                         </pri:panel>
                         <!-- SLOGAN -->
                         <div id="slogan1" class="inner">
-                            
-                            
+
+
                             <h:form id="formbasic" prependId="false" >  
 
 
@@ -53,18 +53,18 @@
                                         </th>
                                         <th></th>
                                     </tr>
-                                    
+
                                     <tr>
                                         <td>
-                                            
+
                                         </td>
                                     </tr>
-                                    
+
                                     <tr>
                                         <td>
                                             <pri:selectManyMenu value="#{snpHomeBean.selectedChickenLineInfoSetOne}"  
-                                                              style="height: 90px;width: 200px;text-align: left;
-                                                              overflow-y: scroll" >  
+                                                                style="height: 90px;width: 200px;text-align: left;
+                                                                overflow-y: scroll" >  
                                                 <f:selectItems value="#{snpHomeBean.chickenLineInfo}" 
                                                                itemLabel="#{snpHomeBean.chickenLineInfo}" 
                                                                itemValue="#{snpHomeBean.chickenLineInfo}" />                                             
@@ -75,7 +75,7 @@
                                         </td>
                                         <td>
                                             <pri:selectManyMenu value="#{snpHomeBean.selectedChickenLineInfoSetTwo}"  
-                                                              style="height: 90px;width: 200px;text-align: left;overflow-y: scroll"   >  
+                                                                style="height: 90px;width: 200px;text-align: left;overflow-y: scroll"   >  
                                                 <f:selectItems value="#{snpHomeBean.chickenLineInfo}" 
                                                                itemLabel="#{snpHomeBean.chickenLineInfo}" 
                                                                itemValue="#{snpHomeBean.chickenLineInfo}" />                                             
@@ -83,44 +83,47 @@
                                         </td>
                                         <td>
                                             <pri:panel id="panelout" style="border: none;background-color: transparent;">
-                                                
-                                            
-                                            <pri:panel id="one"  rendered="#{snpHomeBean.searchByGeneId}">
-                                                <h:panelGrid id="bygeneid" columns="2" >
-                                                    <h:outputLabel value="Gene Id"/>                                        
-                                                    <h:inputText value="#{snpHomeBean.geneId}" />
 
-                                                </h:panelGrid>
-                                            </pri:panel>
-                                            <pri:panel id="two" rendered="#{snpHomeBean.searchByRange}" >
-                                                <h:panelGrid id="byrange" columns="2" >
-                                                   <h:outputLabel value="Chromosome"/>                                        
-                                                   <h:inputText value="#{snpHomeBean.chromosome}" p:placeholder="A:00000-00000"/>
-                                                   <h:outputLabel value=""/>  
-                                                   <h:outputLabel value="[Chromosome:start-end]" style="font-style: italic"/> 
-                                               </h:panelGrid>
-                                            </pri:panel>
-                                            <pri:panel id="three" rendered="#{!snpHomeBean.searchByGeneId and !snpHomeBean.searchByRange}" >
-                                                <h:panelGrid id="normal" columns="2" >
-                                                   <h:outputLabel value="Chromosome"/>
-                                                   <h:inputText value="#{snpHomeBean.chromosome}"/>
 
-                                                   <h:outputLabel value="start"/>
-                                                   <h:inputText value="#{snpHomeBean.startPosition}"/>
-                                                   <h:outputLabel value="end"/>
-                                                   <h:inputText value="#{snpHomeBean.endPosition}"/>
+                                                <pri:panel id="one"  rendered="#{snpHomeBean.searchByGeneId}">
+                                                    <h:panelGrid id="bygeneid" columns="2" >
+                                                        <h:outputLabel value="Gene Id"/>                                        
+                                                        <h:inputText value="#{snpHomeBean.geneId}" />
 
-                                               </h:panelGrid>
-                                            </pri:panel>
+                                                    </h:panelGrid>
                                                 </pri:panel>
+                                                <pri:panel id="two" rendered="#{snpHomeBean.searchByRange}" >
+                                                    <h:panelGrid id="byrange" columns="2" >
+                                                        <h:outputLabel value="Chromosome"/>                                        
+                                                        <h:inputText value="#{snpHomeBean.chromosome}" p:placeholder="A:00000-00000"/>
+                                                        <h:outputLabel value=""/>  
+                                                        <h:outputLabel value="[Chromosome:start-end]" style="font-style: italic"/> 
+                                                    </h:panelGrid>
+                                                </pri:panel>
+                                                <pri:panel id="three" rendered="#{!snpHomeBean.searchByGeneId and !snpHomeBean.searchByRange}" >
+                                                    <h:panelGrid id="normal" columns="2" >
+                                                        <h:outputLabel value="Chromosome"/>
+
+                                                        <!--                                                        <pri:autoComplete id="dd" dropdown="true" value="#//{snpHomeBean.chromosome}" completeMethod="#//{snpHomeBean.completeText}" />
+                                                        -->
+                                                        <h:inputText value="#{snpHomeBean.chromosome}"/>
+
+                                                        <h:outputLabel value="start"/>
+                                                        <h:inputText value="#{snpHomeBean.startPosition}"/>
+                                                        <h:outputLabel value="end"/>
+                                                        <h:inputText value="#{snpHomeBean.endPosition}"/>
+
+                                                    </h:panelGrid>
+                                                </pri:panel>
+                                            </pri:panel>
                                         </td>
-                                            <td valign="bottom">
-                                                <pri:commandButton id="saveBtn" update="formbasic msgadv resulttbl"
-                                                                   action="#{snpHomeBean.submit()}" value="Submit" 
-                                                                   onstart="PF('blockUIWidget').block()"  
-                                                                   oncomplete="PF('blockUIWidget').unblock()"/>
-                                            </td>
-                                        
+                                        <td valign="bottom">
+                                            <pri:commandButton id="saveBtn" update="formbasic msgadv resulttbl"
+                                                               action="#{snpHomeBean.submit()}" value="Submit" 
+                                                               onstart="PF('blockUIWidget').block()"  
+                                                               oncomplete="PF('blockUIWidget').unblock()"/>
+                                        </td>
+
                                     </tr>
 
                                 </table>
@@ -160,7 +163,7 @@
                                     <pri:column headerText="Position">
                                         #{sequence.chromosome_Position}
                                     </pri:column>
-                                    <pri:column headerText="Ref">
+                                    <pri:column headerText="Galgal4">
                                         #{sequence.ref}
                                     </pri:column>
                                     <pri:column headerText="#{snpHomeBean.setOneHeader}">
@@ -168,6 +171,17 @@
                                     </pri:column>
                                     <pri:column headerText="#{snpHomeBean.setTwoHeader}">
                                         #{sequence.setTwo}
+                                    </pri:column>
+
+                                    <pri:column headerText="Genes">
+
+                                        <ui:repeat var="o" value="#{sequence.listOfGenes}" varStatus="gene">
+
+                                            <a href="https://www.ncbi.nlm.nih.gov/gene/?term=#{o}" target="_blank">#{o}</a> &nbsp;&nbsp;&nbsp;
+
+                                        </ui:repeat>
+
+
                                     </pri:column>
                                 </pri:dataTable>
 

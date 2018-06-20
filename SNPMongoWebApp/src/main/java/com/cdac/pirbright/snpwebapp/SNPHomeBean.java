@@ -11,6 +11,8 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import in.cdac.pirbright.chicken.query.SNPChickenQuery;
 import in.cdac.pirbright.mongodb.client.MongoClientSingleton;
+import in.cdac.pirbright.parser.gene.GeneBean;
+import in.cdac.pirbright.parser.gene.GeneTableQuery;
 import in.cdac.pirbright.parser.vcf.VCFLoaderMongoDB;
 import in.cdac.pirbright.snpwebapp.OutputSNPBean;
 
@@ -48,6 +50,8 @@ public class SNPHomeBean implements Serializable {
 
     private SNPChickenQuery chickenQuery;
 
+    GeneTableQuery geneTableQuery;
+
 //    private List<Temp> strList;
     private List<String> selectedChickenLineInfoSetOne;
 
@@ -58,6 +62,7 @@ public class SNPHomeBean implements Serializable {
     private long startPosition = 1;
 
     List<OutputSNPBean> outputSNPBeans = new ArrayList<>();
+    List<GeneBean> geneBeans = new ArrayList<>();
 
     private MongoClient mongoClient;
     private MongoDatabase database;
@@ -92,6 +97,14 @@ public class SNPHomeBean implements Serializable {
     public void init() {
         ChickenLineInfo = new ArrayList<>();
 
+//        ChickenLineInfo.add(new SelectItem("HG01583", "HG01583"));
+//        ChickenLineInfo.add(new SelectItem("HG03006", "HG03006"));
+//        ChickenLineInfo.add(new SelectItem("HG03642", "HG03642"));
+//        ChickenLineInfo.add(new SelectItem("HG03713", "HG03713"));
+//        ChickenLineInfo.add(new SelectItem("NA06984", "NA06984"));
+//        ChickenLineInfo.add(new SelectItem("NA18505", "NA18505"));
+//        ChickenLineInfo.add(new SelectItem("NA18525", "NA18525"));
+//        ChickenLineInfo.add(new SelectItem("NA20845", "NA20845"));
         ChickenLineInfo.add(new SelectItem("Line15", "Line15"));
         ChickenLineInfo.add(new SelectItem("Line6", "Line6"));
         ChickenLineInfo.add(new SelectItem("Line7", "Line7"));
@@ -113,6 +126,8 @@ public class SNPHomeBean implements Serializable {
         collection = database.getCollection(properties.getProperty(Config.MONGO_DB_COLLECTION_NAME));
         VCFLoaderMongoDB mongoDBLoader = new VCFLoaderMongoDB(collection);
         chickenQuery = new SNPChickenQuery(mongoDBLoader);
+        geneTableQuery = new GeneTableQuery();
+
     }
 
     String strPosition;
@@ -120,6 +135,46 @@ public class SNPHomeBean implements Serializable {
     private String geneId;
     private String setOneHeader = "SetOne";
     private String setTwoHeader = "SetTwo";
+
+    public List<String> completeText(String query) {
+        List<String> results = new ArrayList<>();
+
+        results.add("1");
+        results.add("2");
+        results.add("3");
+        results.add("4");
+        results.add("5");
+        results.add("6");
+        results.add("7");
+        results.add("8");
+        results.add("9");
+        results.add("10");
+        results.add("11");
+        results.add("12");
+        results.add("13");
+        results.add("14");
+        results.add("15");
+        results.add("16");
+        results.add("17");
+        results.add("18");
+        results.add("19");
+        results.add("20");
+        results.add("21");
+        results.add("22");
+        results.add("23");
+        results.add("24");
+        results.add("25");
+        results.add("26");
+        results.add("27");
+        results.add("28");
+        results.add("32");
+        results.add("MT");
+
+        results.add("W");
+        results.add("Z");
+
+        return results;
+    }
 
     public String getGeneId() {
         return geneId;
@@ -173,7 +228,13 @@ public class SNPHomeBean implements Serializable {
             if (isSearchByRange()) {
                 System.out.println("in Serach By Range");
                 String ch = getChromosome().substring(0, getChromosome().indexOf(':'));
+
                 strPosition = getChromosome().substring(getChromosome().indexOf(':') + 1, getChromosome().length());
+
+                chromosome = ch;
+                String[] posa = strPosition.split("-");
+                startPosition = Integer.parseInt(posa[0].replaceAll("\\,", "").trim());
+                endPosition = Integer.parseInt(posa[1].replaceAll("\\,", "").trim());
 
                 //                strList = chickenLineInfoFacade.callNOSQLMongoDB(setone, setTwo,ch,strPosition);
                 outputSNPBeans = callNoSQLMongoDB(setone, setTwo, ch, strPosition);
@@ -185,10 +246,10 @@ public class SNPHomeBean implements Serializable {
                 if (getGeneId().equals("") || getGeneId().length() <= 0) {
                     FacesContext.getCurrentInstance().addMessage(null,
                             new FacesMessage("Enter valid Gene Id!!!"));
-                    outputSNPBeans=null;
-                }else{
+                    outputSNPBeans = null;
+                } else {
                     outputSNPBeans = callNoSQLMongoDBSearchByGeneId(setone, setTwo, geneId);
-                }                
+                }
                 //System.out.println(outputSNPBeans.size());
 
             }
@@ -234,14 +295,41 @@ public class SNPHomeBean implements Serializable {
                 }
 
             }
-            
-            
+
             if (outputSNPBeans != null) {
                 totalcount = Integer.toString(outputSNPBeans.size());
             } else {
                 totalcount = "";
             }
 
+            //call genetable list
+            geneBeans = geneTableQuery.retriveVCFRecords(database, chromosome, startPosition, endPosition);
+//            for (GeneBean geneBean : geneBeans) {
+//                System.out.println(geneBean);
+//            }
+
+            if (outputSNPBeans != null) {
+                if (isSearchByGeneId()) {
+                    for (OutputSNPBean outputSNPBean : outputSNPBeans) {
+                        List<String> listOfGenes = new ArrayList<>();
+                        listOfGenes.add(geneId);
+                        outputSNPBean.setListOfGenes(listOfGenes);
+                    }
+                } else {
+                    for (OutputSNPBean outputSNPBean : outputSNPBeans) {
+                        List<String> listOfGenes = new ArrayList<>();
+                        for (GeneBean geneBean : geneBeans) {
+                            if ((outputSNPBean.getChromosome_Position() >= geneBean.getStartPosition()) && (outputSNPBean.getChromosome_Position() <= geneBean.getEndPosition())) {
+                                listOfGenes.add(geneBean.getGeneId());
+                            }
+
+                        }
+                        if (listOfGenes.size() > 0) {
+                            outputSNPBean.setListOfGenes(listOfGenes);
+                        }
+                    }
+                }
+            }
             //compare(getStrList());
         }
 
@@ -251,8 +339,8 @@ public class SNPHomeBean implements Serializable {
         String[] sa = setone.split(",");
         String[] sb = setTwo.split(",");
         String[] posa = position.split("-");
-        int pos1 = Integer.parseInt(posa[0]);
-        int pos2 = Integer.parseInt(posa[1]);
+        int pos1 = Integer.parseInt(posa[0].replaceAll("\\,", "").trim());
+        int pos2 = Integer.parseInt(posa[1].replaceAll("\\,", "").trim());
         List<String> leftList = Arrays.asList(sa);
         List<String> rightList = Arrays.asList(sb);
         setOneHeader = String.join(",", leftList);
@@ -279,7 +367,7 @@ public class SNPHomeBean implements Serializable {
 
         long startTime = System.currentTimeMillis();
         List<OutputSNPBean> retriveVCFRecords = chickenQuery.retriveVCFRecords(database, geneId, leftList, rightList);
-        
+
         long endTime = System.currentTimeMillis();
 
         System.out.println("Time taken : " + (endTime - startTime) + " ms");
